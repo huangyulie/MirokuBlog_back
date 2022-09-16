@@ -3,12 +3,13 @@ import RightContent from '@/components/RightContent';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { PageLoading, SettingDrawer } from '@ant-design/pro-components';
 import { message } from 'antd';
-import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
+import { RequestConfig, RunTimeLayoutConfig, useModel } from 'umi';
 import { history } from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 
 const loginPath = '/user/login';
+let huangyulie: any = 'huangyulie';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -49,11 +50,27 @@ export async function getInitialState(): Promise<{
 }
 
 // src/app.tsx
-const authHeaderInterceptor = (url: string, options: RequestConfig) => {
+const authHeaderInterceptor = (url: string, options: RequestConfig): any => {
+  // const { initialState, setInitialState } = useModel('@@initialState');
+  // const { location } = history;
+  // if (location.pathname !== loginPath) {
+  //   // history.push(loginPath);
+  //   message.warning('游客没有权限哦！！');
+  //   return null;
+  // }
+  // let urlAcees = url.split('/');
+  // if (urlAcees[urlAcees.length - 1] !== 'index') {
+  //   if (location.pathname !== loginPath) {
+  //     // history.push(loginPath);
+  //     message.warning('游客没有权限哦！！');
+  //     return null;
+  //   }
+  // }
   let storage = window.localStorage;
   let data = storage.getItem('token');
   const token = data ? data : '';
   const authHeader = { Authorization: `Bearer ${token}` };
+  // console.log(initialState);
   return {
     url: `${url}`,
     options: { ...options, interceptors: true, headers: authHeader },
@@ -61,11 +78,11 @@ const authHeaderInterceptor = (url: string, options: RequestConfig) => {
 };
 
 const demoResponseInterceptors = (response: Response) => {
-  if(response.status === 401){
+  if (response.status === 401) {
     message.error('token过期');
     history.push(loginPath);
   }
-  if(response.status === 404){
+  if (response.status === 404) {
     message.error('网络错误');
   }
   return response;
@@ -79,6 +96,11 @@ export const request: RequestConfig = {
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+  // console.log(initialState?.currentUser?.name);
+  // huangyulie = initialState?.currentUser;
+  // if(huangyulie.name !== undefined)
+  // console.log(huangyulie.name);
+
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,

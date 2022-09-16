@@ -5,6 +5,7 @@ import './Welcome.less';
 import moment from 'moment';
 import request from 'umi-request';
 import { Pie } from '@ant-design/plots';
+import axios from 'axios';
 interface LabelIprops {
   name: string;
   color: string;
@@ -36,6 +37,9 @@ const Welcome: React.FC = () => {
     let { data } = await request('/api/label/index', {
       method: 'GET',
     });
+    let data1 =await axios.get('https://restapi.amap.com/v3/ip?key=2455323248886ea80cad6e21e75dd20a')
+    console.log(data1);
+    
     setLabel(data);
   };
   const data2 = async () => {
