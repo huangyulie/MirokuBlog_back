@@ -17,7 +17,7 @@ interface ClassifyIprops {
   _id: number;
 }
 
-interface pieIprops{
+interface pieIprops {
   type: string;
   value: number;
 }
@@ -25,7 +25,9 @@ interface pieIprops{
 const Welcome: React.FC = () => {
   const [label, setLabel] = useState<LabelIprops[]>();
   const [classify, setClassify] = useState<ClassifyIprops[]>();
-  const [pie,setPie] = useState<pieIprops[]>();
+  const [pie, setPie] = useState<pieIprops[]>();
+  const [ ip , setIp] = useState();
+  const [city , setCity] = useState<string>('');
 
   useEffect(() => {
     data1();
@@ -34,11 +36,13 @@ const Welcome: React.FC = () => {
   }, []);
 
   const data1 = async () => {
-    let { data } = await request('/api/label/index', {
+    let { data ,ip} = await request('/api/label/index', {
       method: 'GET',
     });
-    let data1 =await axios.get('https://restapi.amap.com/v3/ip?key=2455323248886ea80cad6e21e75dd20a')
-    console.log(data1);
+    setIp(ip.split('"')[3]);
+    let res  = await axios.get('https://restapi.amap.com/v3/ip?key=	2455323248886ea80cad6e21e75dd20a')
+    const {province,city} = res.data
+    setCity(`${province}${city}`)
     
     setLabel(data);
   };
@@ -48,16 +52,15 @@ const Welcome: React.FC = () => {
     });
     setClassify(data);
   };
-  const data3 = async()=>{
-    let {data} = await request('/api/acticle/findP',{
-      method:'GET',
-    })
-    setPie(data)
+  const data3 = async () => {
+    let { data } = await request('/api/acticle/findP', {
+      method: 'GET',
+    });
+    setPie(data);
     console.log(data);
-    
-  }
+  };
 
-  const data: pieIprops[] = pie||[];
+  const data: pieIprops[] = pie || [];
   const config: any = {
     appendPadding: 10,
     data,
@@ -94,8 +97,8 @@ const Welcome: React.FC = () => {
                 <div className="Col-item-1">🎉 欢迎来到MirokuBlog后台管理系统</div>
                 <div className="Col-item-1">📆 现在是{moment().format('MM-DD HH:mm')}</div>
 
-                <div className="Col-item-1">🌍 ip:</div>
-                <div className="Col-item-1">💒 来自</div>
+                <div className="Col-item-1">🌍 ip: {ip}</div>
+                <div className="Col-item-1">💒 来自: {city}</div>
                 <div className="Col-item-1 Col-item-move">🌜 夜深了要早点睡哦</div>
               </div>
             </div>
